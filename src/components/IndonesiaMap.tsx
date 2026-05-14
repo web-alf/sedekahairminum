@@ -1,4 +1,4 @@
-import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls } from "@/components/ui/map";
+import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls, useMap } from "@/components/ui/map";
 import { useEffect, useState } from "react";
 
 const distributionPoints = [
@@ -37,12 +37,32 @@ function useTheme() {
   return theme;
 }
 
+function MapReady({ onReady }: { onReady: () => void }) {
+  const { isLoaded } = useMap();
+  useEffect(() => {
+    if (isLoaded) onReady();
+  }, [isLoaded, onReady]);
+  return null;
+}
+
 export default function IndonesiaMapComponent() {
   const theme = useTheme();
-  const totalGalon = distributionPoints.reduce((s, p) => s + p.galon, 0);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (ready) {
+      const skel = document.getElementById('map-skeleton');
+      if (skel) skel.style.display = 'none';
+    }
+  }, [ready]);
 
   return (
-    <div style={{ height: "100%", width: "100%", borderRadius: "var(--r-lg)", overflow: "hidden" }}>
+    <div style={{
+      height: "100%", width: "100%",
+      borderRadius: "var(--r-lg)", overflow: "hidden",
+      opacity: ready ? 1 : 0,
+      transition: "opacity 0.6s ease",
+    }}>
       <Map
         theme={theme}
         center={[110.58, -7.955]}
@@ -50,6 +70,7 @@ export default function IndonesiaMapComponent() {
         minZoom={9}
         maxZoom={16}
       >
+        <MapReady onReady={() => setReady(true)} />
         <MapControls position="bottom-right" showZoom />
         {distributionPoints.map((p, i) => (
           <MapMarker key={i} longitude={p.lng} latitude={p.lat}>

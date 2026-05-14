@@ -350,7 +350,8 @@ p { margin: 0; text-wrap: pretty; }
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.3s var(--ease-out);
+  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out), background-color 0.3s var(--ease-out);
+  transform: none;
 }
 .theme-toggle:hover {
   border-color: var(--aqua);
