@@ -100,43 +100,6 @@ const cats = ['Semua', 'Cerita Lapangan', 'Edukasi', 'Berita', 'Laporan'];
 </Layout>
 
 <style>
-  .page-hero {
-    padding-top: 180px;
-    padding-bottom: 96px;
-    text-align: center;
-  }
-  .page-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--aqua);
-    margin-bottom: 24px;
-  }
-  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: currentColor;
-  }
-  .page-hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    margin: 0 0 24px;
-  }
-  .page-hero__title em { font-style: italic; color: var(--aqua); }
-  .page-hero__intro {
-    font-size: clamp(16px, 1.3vw, 19px);
-    color: var(--ink-muted);
-    max-width: 62ch;
-    margin: 0 auto;
-    line-height: 1.65;
-  }
   .article-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
   .article-card { display: flex; flex-direction: column; gap: 20px; cursor: pointer; transition: transform 0.4s var(--ease-out); }
   .article-card:hover { transform: translateY(-4px); }
@@ -196,8 +159,6 @@ const cats = ['Semua', 'Cerita Lapangan', 'Edukasi', 'Berita', 'Laporan'];
   }
   @media (max-width: 640px) {
     .article-grid { grid-template-columns: 1fr; }
-    .page-hero { padding-top: 140px; padding-bottom: 64px; }
-    .page-hero__title { font-size: clamp(36px, 8vw, 48px); }
     .article-card__title { font-size: 20px; }
     .article-card--feature .article-card__title { font-size: clamp(24px, 6vw, 32px); }
     .chip { padding: 8px 14px; font-size: 12px; }

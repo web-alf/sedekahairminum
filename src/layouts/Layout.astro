@@ -16,6 +16,9 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script is:inline>
+    (function(){var s=localStorage.getItem('sam-theme');if(s){document.documentElement.setAttribute('data-theme',s);document.documentElement.classList.toggle('dark',s==='dark');}})();
+  </script>
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalUrl} />
@@ -137,15 +140,8 @@ const ogImageUrl = ogImage || `${siteUrl}/assets/hero/DSC00529_4_11zon.webp`;
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Langsung ke konten</a>
   <slot />
-
-  <script is:inline>
-    (function() {
-      var saved = localStorage.getItem('sam-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-      document.documentElement.classList.toggle('dark', (saved || 'dark') === 'dark');
-    })();
-  </script>
 
   <script>
     const observer = new IntersectionObserver((entries) => {

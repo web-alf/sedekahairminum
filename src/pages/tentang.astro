@@ -14,7 +14,7 @@ const milestones = [
   { year: '2022', title: 'Awal Sebuah Niat', desc: 'Berawal dari keprihatinan terhadap pesantren di Sukabumi yang kekurangan air bersih selama musim kemarau panjang.' },
   { year: '2023', title: 'Unit Pertama Berjalan', desc: 'Modifikasi mobil karoseri pertama dengan tangki stainless steel dan sistem filtrasi RO. Pengiriman perdana ke 12 lembaga di Jawa Barat.' },
   { year: '2024', title: 'Sistem Tracking Online', desc: 'Peluncuran website resmi sedekahairminum.com dengan sistem tracking real-time.' },
-  { year: '2025', title: 'Ekspansi Jawa Tengah', desc: 'Penambahan armada kedua memperluas operasional ke Jawa Tengah, DIY, dan Banyumas Raya. Total 642 lembaga telah tersentuh program.' },
+  { year: '2025', title: 'Ekspansi Jawa Tengah', desc: 'Penambahan armada kedua memperluas operasional ke Jawa Tengah, DIY, dan Banyumas Raya. Total 19 lembaga penerima manfaat di Gunung Kidul.' },
   { year: '2026', title: 'Indonesia Timur', desc: 'Persiapan armada ketiga untuk menjangkau NTB, NTT, dan Sulawesi Selatan. Target 1.000 lembaga penerima manfaat akhir tahun.' },
 ];
 
@@ -43,7 +43,7 @@ const misi = [
         <span class="page-hero__eyebrow">Tentang Kami</span>
         <h1 class="page-hero__title fade-up in">Mengalirkan air,<br/><em>mengalirkan</em> pahala.</h1>
         <p class="page-hero__intro fade-up in" style="transition-delay:120ms">
-          Sedekah Air Minum adalah gerakan wakaf air bersih yang lahir dari satu keprihatinan sederhana — kekurangan air minum layak di banyak pesantren dan tempat ibadah pelosok. Kini, kami melayani 642 lembaga di 24 provinsi.
+          Sedekah Air Minum adalah gerakan wakaf air bersih yang lahir dari satu keprihatinan sederhana — kekurangan air minum layak di banyak pesantren dan tempat ibadah pelosok. Kini, kami melayani 19 lembaga di Kabupaten Gunung Kidul.
         </p>
       </div>
     </section>
@@ -162,43 +162,6 @@ const misi = [
 </Layout>
 
 <style>
-  .page-hero {
-    padding-top: 180px;
-    padding-bottom: 96px;
-    text-align: center;
-  }
-  .page-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--aqua);
-    margin-bottom: 24px;
-  }
-  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: currentColor;
-  }
-  .page-hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    margin: 0 0 24px;
-  }
-  .page-hero__title em { font-style: italic; color: var(--aqua); }
-  .page-hero__intro {
-    font-size: clamp(16px, 1.3vw, 19px);
-    color: var(--ink-muted);
-    max-width: 62ch;
-    margin: 0 auto;
-    line-height: 1.65;
-  }
   .tentang-vm { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
   .values-grid {
     display: grid;
@@ -256,8 +219,6 @@ const misi = [
   @media (max-width: 640px) {
     .values-grid { grid-template-columns: 1fr; }
     .team-grid { grid-template-columns: 1fr; }
-    .page-hero { padding-top: 140px; padding-bottom: 64px; }
-    .page-hero__title { font-size: clamp(36px, 8vw, 48px); }
     .milestone__year { font-size: 28px; }
     .member__photo { aspect-ratio: 3 / 4; }
     .value { padding: 28px 20px; }

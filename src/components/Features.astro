@@ -103,5 +103,9 @@ const programSlides = [
   }
 
   pDots.forEach(function(d) { d.addEventListener('click', function() { goProgram(Number(d.dataset.programDot)); }); });
-  setInterval(function() { goProgram((pIdx + 1) % pTotal); }, 3000);
+  var pPaused = false;
+  var pSlider = document.getElementById('program-slider');
+  pSlider.addEventListener('mouseenter', function() { pPaused = true; });
+  pSlider.addEventListener('mouseleave', function() { pPaused = false; });
+  setInterval(function() { if (!pPaused) goProgram((pIdx + 1) % pTotal); }, 3000);
 </script>

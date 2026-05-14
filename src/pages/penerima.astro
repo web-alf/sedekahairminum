@@ -154,43 +154,6 @@ const types = ['Semua', 'Pesantren', 'Yayasan'];
 </Layout>
 
 <style>
-  .page-hero {
-    padding-top: 180px;
-    padding-bottom: 96px;
-    text-align: center;
-  }
-  .page-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--aqua);
-    margin-bottom: 24px;
-  }
-  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: currentColor;
-  }
-  .page-hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    margin: 0 0 24px;
-  }
-  .page-hero__title em { font-style: italic; color: var(--aqua); }
-  .page-hero__intro {
-    font-size: clamp(16px, 1.3vw, 19px);
-    color: var(--ink-muted);
-    max-width: 62ch;
-    margin: 0 auto;
-    line-height: 1.65;
-  }
   .penerima-stats {
     border-radius: var(--r-lg);
     border: 1px solid var(--border);
@@ -250,8 +213,6 @@ const types = ['Semua', 'Pesantren', 'Yayasan'];
   @media (max-width: 640px) {
     .table { font-size: 12px; }
     .table th, .table td { padding: 10px 12px; }
-    .page-hero { padding-top: 140px; padding-bottom: 64px; }
-    .page-hero__title { font-size: clamp(36px, 8vw, 48px); }
     .input-pill { min-width: unset; }
     .penerima-toolbar { flex-direction: column; }
     .chip { padding: 8px 14px; font-size: 12px; }

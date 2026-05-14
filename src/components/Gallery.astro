@@ -90,10 +90,15 @@ const slides = [
     gIdx = i;
   }
 
+  var gPaused = false;
   function resetAutoGallery() {
     clearInterval(gAutoTimer);
-    gAutoTimer = setInterval(function() { goGallery((gIdx + 1) % gTotal); }, 3000);
+    gAutoTimer = setInterval(function() { if (!gPaused) goGallery((gIdx + 1) % gTotal); }, 3000);
   }
+
+  var galleryEl = document.getElementById('gallery');
+  galleryEl.addEventListener('mouseenter', function() { gPaused = true; });
+  galleryEl.addEventListener('mouseleave', function() { gPaused = false; });
 
   document.getElementById('gallery-prev').addEventListener('click', function() {
     goGallery((gIdx - 1 + gTotal) % gTotal);

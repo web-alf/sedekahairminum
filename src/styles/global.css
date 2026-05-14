@@ -74,6 +74,19 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 999;
+  padding: 12px 24px;
+  background: var(--aqua);
+  color: #03222a;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: 14px;
+}
+.skip-link:focus { top: 16px; }
 
 html.theme-transitioning body,
 html.theme-transitioning .nav,
@@ -924,10 +937,15 @@ p { margin: 0; text-wrap: pretty; }
   justify-content: space-between;
   gap: 32px;
   padding: 28px 0;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
   font-family: var(--font-display);
   font-size: clamp(18px, 1.8vw, 22px);
   font-weight: 400;
   color: var(--ink-strong);
+  cursor: pointer;
   transition: color 0.3s;
 }
 .faq__item:hover .faq__q { color: var(--aqua); }
@@ -1060,6 +1078,45 @@ p { margin: 0; text-wrap: pretty; }
   transform: translateY(0);
 }
 
+/* ===== page hero (inner pages) ===== */
+.page-hero {
+  padding-top: 180px;
+  padding-bottom: 96px;
+  text-align: center;
+}
+.page-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  margin-bottom: 24px;
+}
+.page-hero__eyebrow::before, .page-hero__eyebrow::after {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+}
+.page-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 0 24px;
+}
+.page-hero__title em { font-style: italic; color: var(--aqua); }
+.page-hero__intro {
+  font-size: clamp(16px, 1.3vw, 19px);
+  color: var(--ink-muted);
+  max-width: 62ch;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
 /* ===== skeleton ===== */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
@@ -1157,6 +1214,8 @@ p { margin: 0; text-wrap: pretty; }
   .feature { grid-template-columns: 1fr auto; }
   .feature__title { font-size: 20px; }
   .feature__desc { font-size: 14px; }
+  .page-hero { padding-top: 140px; padding-bottom: 64px; }
+  .page-hero__title { font-size: clamp(36px, 8vw, 48px); }
   .eyebrow { font-size: 11px; }
 }
 

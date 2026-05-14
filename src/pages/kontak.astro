@@ -82,6 +82,9 @@ const rekening = [
 
           <div class="fade-up" style="transition-delay:120ms">
             <form class="form" id="contact-form">
+              <div style="position:absolute;left:-9999px" aria-hidden="true">
+                <input type="text" name="website" id="hp-field" tabindex="-1" autocomplete="off" />
+              </div>
               <div style="margin-bottom:8px">
                 <span class="eyebrow">Kirim Pesan</span>
                 <h3 style="margin-top:14px;font-size:26px;font-weight:400">Tulis pesan Anda</h3>
@@ -102,7 +105,8 @@ const rekening = [
               </div>
               <div class="form__row">
                 <label for="topik">Topik</label>
-                <select id="topik" name="topik">
+                <select id="topik" name="topik" required>
+                  <option value="" disabled selected>Pilih topik...</option>
                   <option>Sedekah / Donasi</option>
                   <option>Pengajuan Penerima Manfaat</option>
                   <option>Donasi Korporat</option>
@@ -152,43 +156,6 @@ const rekening = [
 </Layout>
 
 <style>
-  .page-hero {
-    padding-top: 180px;
-    padding-bottom: 96px;
-    text-align: center;
-  }
-  .page-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--aqua);
-    margin-bottom: 24px;
-  }
-  .page-hero__eyebrow::before, .page-hero__eyebrow::after {
-    content: "";
-    width: 24px;
-    height: 1px;
-    background: currentColor;
-  }
-  .page-hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    margin: 0 0 24px;
-  }
-  .page-hero__title em { font-style: italic; color: var(--aqua); }
-  .page-hero__intro {
-    font-size: clamp(16px, 1.3vw, 19px);
-    color: var(--ink-muted);
-    max-width: 62ch;
-    margin: 0 auto;
-    line-height: 1.65;
-  }
   .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
   .contact-card { display: flex; flex-direction: column; gap: 24px; }
   .contact-item {
@@ -262,8 +229,6 @@ const rekening = [
   }
   @media (max-width: 640px) {
     .form__row--double { grid-template-columns: 1fr; }
-    .page-hero { padding-top: 140px; padding-bottom: 64px; }
-    .page-hero__title { font-size: clamp(36px, 8vw, 48px); }
   }
 </style>
 
@@ -289,6 +254,7 @@ const rekening = [
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+    if (document.getElementById('hp-field').value) return;
 
     var nama = form.querySelector('#nama').value.trim();
     var phone = form.querySelector('#phone').value.trim();

@@ -90,7 +90,11 @@ const slides = [
   }
 
   allDots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.dot))));
-  setInterval(() => goTo((idx + 1) % total), 6000);
+  var heroPaused = false;
+  var heroEl = document.getElementById('hero');
+  heroEl.addEventListener('mouseenter', () => { heroPaused = true; });
+  heroEl.addEventListener('mouseleave', () => { heroPaused = false; });
+  setInterval(() => { if (!heroPaused) goTo((idx + 1) % total); }, 6000);
 
   window.addEventListener('scroll', () => {
     if (heroBg) heroBg.style.transform = `translateY(${window.scrollY * 0.18}px)`;
