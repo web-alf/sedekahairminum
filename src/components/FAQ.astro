@@ -1,19 +1,18 @@
 ---
 const faqs = [
-  { q: 'Apa itu Sedekah Air Minum?', a: 'Sedekah Air Minum adalah gerakan wakaf air bersih yang menyalurkan air minum gratis untuk masjid, mushola, pesantren, dan lembaga pendidikan Islam di seluruh Indonesia, terutama di daerah yang sulit terjangkau distribusi air komersial.' },
+  { q: 'Apa itu Sedekah Air Minum?', a: 'Sedekah air minum adalah gerakan sedekah yang menyalurkan air minum gratis untuk pondok pesantren dan lembaga yang membutuhkan, terutama di daerah yang sulit terjangkau distribusi air komersial.' },
   { q: 'Bagaimana cara berdonasi atau bersedekah?', a: 'Donatur cukup mengisi formulir donasi di website atau menghubungi nomor WhatsApp kami. Donasi mulai Rp 5.000 sudah bisa mengalirkan air bersih ke penerima manfaat. Setiap donatur akan menerima konfirmasi dan nomor resi pengiriman.' },
-  { q: 'Berapa lama proses penyaluran air ke penerima manfaat?', a: 'Setelah donasi terkonfirmasi, tim kami akan menjadwalkan pengiriman dalam 3–7 hari kerja, tergantung lokasi tujuan. Untuk daerah pelosok, proses bisa sedikit lebih lama, namun selalu kami update via WhatsApp.' },
-  { q: 'Apakah saya akan mendapatkan bukti penyaluran?', a: 'Tentu. Setiap donatur akan menerima nomor resi unik (SAM-YYYYMMDD-XXX) yang bisa dilacak melalui menu Cek Status Pengiriman. Kami juga mengirim foto dan video dokumentasi langsung dari lokasi.' },
+  { q: 'Berapa lama proses penyaluran air ke penerima manfaat?', a: 'Setelah pengajuan terkonfirmasi, permohonan akan diproses mulai dari filterisasi data, survei, hingga distribusi. Bantuan air minum dapat diterima maksimal 14 hari kerja dan seluruh proses akan kami update melalui WhatsApp.' },
+  { q: 'Apakah saya akan mendapatkan bukti penyaluran?', a: 'Tentu, setiap donatur akan menerima info terbaru penyaluran air minum gratis via wa.' },
   { q: 'Apakah ada minimal jumlah untuk sedekah?', a: 'Tidak ada minimum. Donasi dimulai dari Rp 5.000 — cukup untuk mengalirkan satu galon air bersih. Anda bebas berdonasi sesuai kemampuan; setiap tetes bernilai pahala.' },
-  { q: 'Bagaimana jika ada masalah dengan pengiriman?', a: 'Hubungi tim kami melalui WhatsApp di 0853-1948-0974 atau email info@sedekahairminum.com. Kami berkomitmen memberikan respons dalam 1×24 jam kerja.' },
+  { q: 'Bagaimana jika ada masalah dengan pengiriman?', a: 'Hubungi tim kami melalui WhatsApp di 0853-1948-0974 atau email gerakansumur@gmail.com. Kami berkomitmen memberikan respons dalam 1×24 jam kerja.' },
 ];
 ---
 
 <section class="section">
   <div class="container container--narrow">
     <div class="section-head section-head--center fade-up">
-      <span class="eyebrow">Pertanyaan Umum</span>
-      <h2 style="margin-top:18px">Yang sering <em class="italic-serif">ditanyakan</em>.</h2>
+      <h2>Yang sering <em class="italic-serif">ditanyakan</em>.</h2>
     </div>
     <div class="faq fade-up" id="faq">
       {faqs.map((f, i) => (

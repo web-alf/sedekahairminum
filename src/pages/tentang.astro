@@ -19,9 +19,9 @@ const milestones = [
 ];
 
 const team = [
-  { name: "Achmad Syafi'i", role: 'Founder & Direktur', initials: 'AS' },
-  { name: 'Ridwan Hakim', role: 'Operasional Armada', initials: 'RH' },
-  { name: 'Siti Maryam', role: 'Donor Relations', initials: 'SM' },
+  { name: '', role: 'Founder & Direktur', initials: '?' },
+  { name: '', role: 'Operasional Armada', initials: '?' },
+  { name: '', role: 'Donor Relations', initials: '?' },
 ];
 
 const misi = [
@@ -43,7 +43,7 @@ const misi = [
         <span class="page-hero__eyebrow">Tentang Kami</span>
         <h1 class="page-hero__title fade-up in">Mengalirkan air,<br/><em>mengalirkan</em> pahala.</h1>
         <p class="page-hero__intro fade-up in" style="transition-delay:120ms">
-          Sedekah Air Minum adalah gerakan wakaf air bersih yang lahir dari satu keprihatinan sederhana — kekurangan air minum layak di banyak pesantren dan tempat ibadah pelosok. Kini, kami melayani 19 lembaga di Kabupaten Gunung Kidul.
+          Sedekah Air Minum adalah gerakan distribusi air minum untuk pesantren dan tempat ibadah yang lahir dari kepedulian terhadap keterbatasan akses air minum layak. Saat ini, kami telah melayani 19 lembaga di Kabupaten Gunung Kidul.
         </p>
       </div>
     </section>
@@ -54,7 +54,7 @@ const misi = [
           <div>
             <span class="eyebrow">Visi</span>
             <p style="font-family:var(--font-display);font-size:clamp(28px, 3.4vw, 42px);font-weight:400;line-height:1.2;margin-top:18px;color:var(--ink-strong);letter-spacing:-0.015em">
-              Menjadi gerakan wakaf air <em class="italic-serif">terbesar</em> dan paling tepercaya di Indonesia, hadir untuk umat di mana pun mereka berada.
+              Menjadi gerakan Sedekah Air Minum <em class="italic-serif">terbesar</em> dan paling tepercaya di Indonesia, hadir untuk umat di mana pun mereka berada.
             </p>
           </div>
           <div>
@@ -89,26 +89,6 @@ const misi = [
               <span class="value__num">&mdash; {v.n}</span>
               <h3 class="value__title">{v.title}</h3>
               <p class="value__desc">{v.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="section" style="background:var(--surface);border-block:1px solid var(--border)">
-      <div class="container container--narrow">
-        <div class="section-head section-head--center fade-up">
-          <span class="eyebrow">Perjalanan Kami</span>
-          <h2 style="margin-top:18px">Dari satu mobil,<br/>menuju <em class="italic-serif">seluruh negeri</em>.</h2>
-        </div>
-        <div class="milestone-list fade-up">
-          {milestones.map(m => (
-            <div class="milestone">
-              <div class="milestone__year">{m.year}</div>
-              <div>
-                <h3 class="milestone__title">{m.title}</h3>
-                <p class="milestone__desc">{m.desc}</p>
-              </div>
             </div>
           ))}
         </div>
