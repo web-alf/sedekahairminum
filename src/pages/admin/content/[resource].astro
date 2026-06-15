@@ -8,8 +8,8 @@ const slug = Astro.params.resource!;
 const def = RESOURCES[slug];
 if (!def) return Astro.redirect('/admin');
 
-const { data } = await Astro.locals.supabase
-  .from(def.table as string)
+const { data } = await (Astro.locals.supabase as any)
+  .from(def.table)
   .select('*')
   .order('sort_order', { ascending: true });
 ---

@@ -20,7 +20,7 @@ export interface ArticleRow {
   id: string;
   title: string;
   slug: string;
-  status: ArticleStatus;
+  status: string;
   published_at: string | null;
   view_count: number;
   updated_at: string;
@@ -100,7 +100,7 @@ export default function ArticlesTable({ initial }: { initial: ArticleRow[] }) {
                   <div className="text-xs text-muted-foreground">/{r.slug}</div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className={statusTone[r.status]}>{statusLabel[r.status]}</Badge>
+                  <Badge variant="outline" className={statusTone[r.status as ArticleStatus] ?? ''}>{statusLabel[r.status as ArticleStatus] ?? r.status}</Badge>
                 </TableCell>
                 <TableCell className="text-right tabular-nums">{r.view_count}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{absoluteTime(r.updated_at)}</TableCell>

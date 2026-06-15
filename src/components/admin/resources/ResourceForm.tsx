@@ -45,16 +45,17 @@ export default function ResourceForm({ resourceSlug, initial }: Props) {
 
     setSaving(true);
     const supabase = createSupabaseBrowser();
+    const db = supabase as any;
     const row = parsed.data as Record<string, unknown>;
     row.sort_order = values.sort_order ?? 0;
 
     if (isEdit) {
-      const { error } = await (supabase.from(def.table as string) as any).update(row).eq('id', initial!.id as string);
+      const { error } = await db.from(def.table).update(row).eq('id', initial!.id as string);
       if (error) { toast.error(error.message); setSaving(false); return; }
       await recordActivity(supabase, { action: 'update', entityType: def.table, entityId: initial!.id as string, summary: `memperbarui ${def.label}` });
       toast.success('Diperbarui');
     } else {
-      const { error } = await (supabase.from(def.table as string) as any).insert(row);
+      const { error } = await db.from(def.table).insert(row);
       if (error) { toast.error(error.message); setSaving(false); return; }
       await recordActivity(supabase, { action: 'create', entityType: def.table, summary: `menambah ${def.label}` });
       toast.success('Ditambahkan');

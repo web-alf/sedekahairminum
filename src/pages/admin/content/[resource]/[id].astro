@@ -9,8 +9,8 @@ const itemId = Astro.params.id!;
 const def = RESOURCES[slug];
 if (!def) return Astro.redirect('/admin');
 
-const { data: item } = await Astro.locals.supabase
-  .from(def.table as string)
+const { data: item } = await (Astro.locals.supabase as any)
+  .from(def.table)
   .select('*')
   .eq('id', itemId)
   .maybeSingle();
