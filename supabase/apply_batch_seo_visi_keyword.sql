@@ -1,8 +1,8 @@
 -- ============================================================
--- BATCH: visi settings + article focus_keyword + Rank Math SEO
+-- BATCH: visi settings + focus_keyword + Rank Math SEO + cover_meta
 -- Paste seluruh isi file ini di Supabase Dashboard → SQL Editor → Run.
 -- Idempoten (aman dijalankan berulang): IF NOT EXISTS / ON CONFLICT DO NOTHING.
--- Sumber: migrasi 0015, 0016, 0017.
+-- Sumber: migrasi 0015, 0016, 0017, 0018.
 -- ============================================================
 
 -- ── 0015: key "about" (Visi editable di Pengaturan → Visi) ──────────────────
@@ -53,3 +53,10 @@ insert into public.seo_settings (key, value) values
     'robots_index', true
   ))
 on conflict (key) do nothing;
+
+-- ── 0018: kolom cover_ratio + cover_focal (sampul adjustable) ──────────────
+alter table public.articles
+  add column if not exists cover_ratio text default '16:9';
+alter table public.articles
+  add column if not exists cover_focal text default '50,50';
+

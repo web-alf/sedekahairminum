@@ -115,6 +115,8 @@ export type Database = {
           content: Json | null
           content_html: string | null
           cover_image: string | null
+          cover_focal: string | null
+          cover_ratio: string | null
           created_at: string
           excerpt: string | null
           focus_keyword: string | null
@@ -136,6 +138,8 @@ export type Database = {
           content?: Json | null
           content_html?: string | null
           cover_image?: string | null
+          cover_focal?: string | null
+          cover_ratio?: string | null
           created_at?: string
           excerpt?: string | null
           focus_keyword?: string | null
@@ -157,6 +161,8 @@ export type Database = {
           content?: Json | null
           content_html?: string | null
           cover_image?: string | null
+          cover_focal?: string | null
+          cover_ratio?: string | null
           created_at?: string
           excerpt?: string | null
           focus_keyword?: string | null

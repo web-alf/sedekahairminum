@@ -26,6 +26,8 @@ export interface ArticleInitial {
   excerpt: string;
   content: JSONContent | null;
   cover_image: string;
+  cover_ratio: string;
+  cover_focal: string;
   status: ArticleStatus;
   published_at: string | null;
   category_id: string | null;
@@ -51,12 +53,29 @@ function escapeHtml(s: string): string {
     .replace(/>/g, '&gt;');
 }
 
+// Cover sizing helpers: ratio string → CSS aspect-ratio, focal 'x,y' → object-position.
+function aspectRatioCss(ratio: string): string {
+  switch (ratio) {
+    case '4:3': return '4 / 3';
+    case '1:1': return '1 / 1';
+    case 'original': return 'auto';
+    default: return '16 / 9';
+  }
+}
+function focalToObjectPosition(focal: string): string {
+  const [x, y] = focal.split(',').map((n) => Number(n));
+  if (Number.isNaN(x) || Number.isNaN(y)) return '50% 50%';
+  return `${x}% ${y}%`;
+}
+
 export default function ArticleForm({ initial, categories, tags }: Props) {
   const [title, setTitle] = React.useState(initial.title);
   const [slug, setSlug] = React.useState(initial.slug);
   const [slugTouched, setSlugTouched] = React.useState(Boolean(initial.slug));
   const [excerpt, setExcerpt] = React.useState(initial.excerpt);
   const [cover, setCover] = React.useState(initial.cover_image);
+  const [coverRatio, setCoverRatio] = React.useState(initial.cover_ratio || '16:9');
+  const [coverFocal, setCoverFocal] = React.useState(initial.cover_focal || '50,50');
   const [status, setStatus] = React.useState<ArticleStatus>(initial.status);
   const [publishedAt, setPublishedAt] = React.useState(initial.published_at ?? '');
   const [categoryId, setCategoryId] = React.useState(initial.category_id ?? NO_CATEGORY);
@@ -187,6 +206,8 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
           content_html: editorState.current.html,
           plain_text: editorState.current.text,
           cover_image: cover || null,
+          cover_ratio: coverRatio,
+          cover_focal: coverFocal,
           status: effectiveStatus,
           published_at: publishedAt || null,
           category_id: categoryId === NO_CATEGORY ? null : categoryId,
@@ -239,7 +260,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
     return () => clearTimeout(t);
     // editorState is a ref; contentText/contentHtml mirror it for dependency tracking.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, slug, excerpt, cover, status, categoryId, tagIds, metaTitle, metaDesc, focusKeyword, contentText, contentHtml, initial.id]);
+  }, [title, slug, excerpt, cover, coverRatio, coverFocal, status, categoryId, tagIds, metaTitle, metaDesc, focusKeyword, contentText, contentHtml, initial.id]);
 
   return (
     <div className="space-y-4">
@@ -319,19 +340,49 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
 
           <Card>
             <CardHeader className="pb-3"><CardTitle className="text-sm">Sampul</CardTitle></CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               {cover ? (
-                <div className="group relative overflow-hidden rounded-md border">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cover} alt="Sampul" className="aspect-video w-full object-cover" />
-                  <button
-                    onClick={() => setCover('')}
-                    className="absolute right-2 top-2 rounded-md bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                    aria-label="Hapus sampul"
-                  >
-                    <Icon name="x" className="size-4" />
-                  </button>
-                </div>
+                <>
+                  <div className="group relative overflow-hidden rounded-md border">
+                    <img
+                      src={cover}
+                      alt="Sampul"
+                      className="w-full object-cover"
+                      style={{ aspectRatio: aspectRatioCss(coverRatio), objectPosition: focalToObjectPosition(coverFocal) }}
+                    />
+                    <button
+                      onClick={() => setCover('')}
+                      className="absolute right-2 top-2 rounded-md bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-label="Hapus sampul"
+                    >
+                      <Icon name="x" className="size-4" />
+                    </button>
+                  </div>
+                  {/* Aspect ratio picker */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Rasio potong</Label>
+                    <div className="flex gap-1.5">
+                      {(['16:9', '4:3', '1:1', 'original'] as const).map((r) => (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => setCoverRatio(r)}
+                          className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${coverRatio === r ? 'border-primary bg-primary/10 text-foreground' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                        >{r === 'original' ? 'Asli' : r}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Focal point (drag on the image or sliders) */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Titik fokus (geser untuk atur potongan)</Label>
+                    <FocalPicker
+                      src={cover}
+                      ratio={coverRatio}
+                      value={coverFocal}
+                      onChange={setCoverFocal}
+                    />
+                  </div>
+                </>
               ) : (
                 <button
                   onClick={() => coverInputRef.current?.click()}
@@ -458,6 +509,57 @@ function AutosaveBadge({ state }: { state: 'idle' | 'saving' | 'saved' | 'error'
       <Icon name={s.icon} className={`size-3.5 ${s.spin ? 'animate-spin' : ''}`} />
       {s.text}
     </span>
+  );
+}
+
+// Click/drag on a small preview to set the cover focal point (crop position).
+// Stores 'x,y' as 0-100 percentages.
+function FocalPicker({ src, ratio, value, onChange }: {
+  src: string;
+  ratio: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [x, y] = value.split(',').map((n) => Number(n));
+  const fx = Number.isNaN(x) ? 50 : x;
+  const fy = Number.isNaN(y) ? 50 : y;
+
+  function update(e: React.PointerEvent) {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const nx = Math.round(Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)));
+    const ny = Math.round(Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100)));
+    onChange(`${nx},${ny}`);
+  }
+  function onDown(e: React.PointerEvent) {
+    e.preventDefault();
+    update(e);
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }
+  function onMove(e: React.PointerEvent) {
+    if (e.buttons !== 1) return;
+    update(e);
+  }
+
+  return (
+    <div
+      ref={ref}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      className="relative w-full cursor-crosshair overflow-hidden rounded-md border"
+      style={{ aspectRatio: aspectRatioCss(ratio) }}
+      title="Klik atau geser untuk atur titik fokus"
+    >
+      <img src={src} alt="Pratinjau fokus" className="h-full w-full object-cover" style={{ objectPosition: `${fx}% ${fy}%` }} draggable={false} />
+      {/* crosshair */}
+      <span
+        className="pointer-events-none absolute size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow"
+        style={{ left: `${fx}%`, top: `${fy}%`, backgroundColor: 'rgba(94,228,240,0.7)' }}
+      />
+      <span className="pointer-events-none absolute bottom-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">{fx},{fy}</span>
+    </div>
   );
 }
 

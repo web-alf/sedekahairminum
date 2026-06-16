@@ -23,6 +23,20 @@ const ogImage = article.og_image || article.cover_image || `${siteUrl}/assets/he
 const metaTitle = article.meta_title || article.title;
 const metaDesc = article.meta_description || article.excerpt || '';
 
+// Cover sizing: derive aspect-ratio + object-position from CMS fields, with
+// sensible fallbacks for articles written before the editor supported these.
+const coverRatio = (article.cover_ratio as string | null) || '16:9';
+const coverFocal = (article.cover_focal as string | null) || '50,50';
+function coverAspectCss(r: string): string {
+  if (r === '4:3') return '4 / 3';
+  if (r === '1:1') return '1 / 1';
+  if (r === 'original') return 'auto';
+  return '16 / 9';
+}
+const [fx, fy] = coverFocal.split(',').map((n) => Number(n));
+const coverObjectPosition = `${Number.isNaN(fx) ? 50 : fx}% ${Number.isNaN(fy) ? 50 : fy}%`;
+const coverStyle = `aspect-ratio:${coverAspectCss(coverRatio)};object-position:${coverObjectPosition};`;
+
 function formatDate(iso: string | null): string {
   if (!iso) return '';
   return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
@@ -63,7 +77,7 @@ const tags = ((article as any).article_tags ?? []).map((at: any) => at.tag);
 
       {article.cover_image && (
         <div class="article__cover container">
-          <img src={article.cover_image} alt={article.title} />
+          <img src={article.cover_image} alt={article.title} style={coverStyle} />
         </div>
       )}
 

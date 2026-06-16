@@ -26,6 +26,8 @@ const schema = z.object({
   plain_text: z.string().max(MAX_CONTENT_HTML).default(''),
   cover_image: z.string().url().max(MAX_URL).nullable().optional()
     .or(z.literal('').transform(() => null)),
+  cover_ratio: z.enum(['16:9', '4:3', '1:1', 'original']).nullable().optional(),
+  cover_focal: z.string().max(20).nullable().optional(),
   status: z.enum(['draft', 'published', 'scheduled', 'archived']),
   published_at: z.string().nullable().optional(),
   category_id: z.string().uuid().nullable().optional(),
@@ -70,6 +72,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     content: payload.content ?? null,
     ...(htmlToSave !== undefined && { content_html: htmlToSave }),
     cover_image: payload.cover_image ?? null,
+    cover_ratio: payload.cover_ratio ?? null,
+    cover_focal: payload.cover_focal ?? null,
     status: payload.status,
     published_at: publishedAt,
     category_id: payload.category_id ?? null,
