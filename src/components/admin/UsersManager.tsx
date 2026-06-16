@@ -44,6 +44,10 @@ export default function UsersManager({ initial, currentUserId }: { initial: User
   const [fullName, setFullName] = React.useState('');
   const [newRole, setNewRole] = React.useState<Role>('editor');
   const [adding, setAdding] = React.useState(false);
+  // Password reset dialog state.
+  const [resetTarget, setResetTarget] = React.useState<UserRow | null>(null);
+  const [newPassword, setNewPassword] = React.useState('');
+  const [resetting, setResetting] = React.useState(false);
 
   async function addUser() {
     if (!email || !password || password.length < 6) {
@@ -79,6 +83,32 @@ export default function UsersManager({ initial, currentUserId }: { initial: User
     toast.success('Role diperbarui');
   }
 
+  // Reset a user's password (admin/owner only). Mirrors the same privilege
+  // model used elsewhere: owner is never resettable; admins cannot be reset by
+  // anyone but owner in the same way only owner can change admin roles. The
+  // signed-in admin can also reset their own password from this dialog.
+  async function resetPassword() {
+    if (!resetTarget) return;
+    if (newPassword.length < 8) {
+      toast.error('Password baru minimal 8 karakter');
+      return;
+    }
+    setResetting(true);
+    try {
+      const res = await fetch('/api/users/reset-password', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ user_id: resetTarget.id, new_password: newPassword }),
+      });
+      const body = (await res.json()) as { ok: boolean; error?: string };
+      if (!body.ok) { toast.error(body.error ?? 'Gagal'); return; }
+      toast.success(`Kata sandi ${resetTarget.email} direset. Sampaikan ke user secara aman.`);
+      setResetTarget(null);
+      setNewPassword('');
+    } catch { toast.error('Gagal mereset kata sandi'); }
+    finally { setResetting(false); }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -99,6 +129,7 @@ export default function UsersManager({ initial, currentUserId }: { initial: User
               <TableHead>Email</TableHead>
               <TableHead className="w-32">Role</TableHead>
               <TableHead className="w-44">Terdaftar</TableHead>
+              <TableHead className="w-44">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -120,6 +151,19 @@ export default function UsersManager({ initial, currentUserId }: { initial: User
                   )}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">{absoluteTime(u.created_at)}</TableCell>
+                <TableCell>
+                  {u.role === 'owner' ? (
+                    <span className="text-xs text-muted-foreground">—</span>
+                  ) : (
+                    <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => { setResetTarget(u); setNewPassword(''); }}
+                    >
+                      <Icon name="key-round" /> Reset sandi
+                    </Button>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -160,6 +204,42 @@ export default function UsersManager({ initial, currentUserId }: { initial: User
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Password reset dialog */}
+      <Dialog open={Boolean(resetTarget)} onOpenChange={(o) => !o && setResetTarget(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reset kata sandi</DialogTitle>
+          </DialogHeader>
+          {resetTarget && (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {resetTarget.id === currentUserId
+                  ? 'Atur ulang kata sandi Anda sendiri. Setelah disimpan, login berikutnya pakai sandi baru.'
+                  : <>Atur ulang kata sandi untuk <span className="font-medium text-foreground">{resetTarget.email}</span>. Sampaikan sandi baru ke user secara aman — ini tidak mengirim email.</>}
+              </p>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Kata sandi baru</Label>
+                <Input
+                  type="text"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Minimal 8 karakter, 1 huruf besar, 1 angka"
+                  autoComplete="off"
+                />
+                <p className="text-xs text-muted-foreground">Minimal 8 karakter, harus ada huruf besar &amp; angka.</p>
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="outline" onClick={() => setResetTarget(null)}>Batal</Button>
+                <Button onClick={resetPassword} disabled={resetting}>
+                  {resetting && <Icon name="loader-circle" className="animate-spin" />}
+                  Simpan sandi baru
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
       <Toaster position="top-right" richColors />
