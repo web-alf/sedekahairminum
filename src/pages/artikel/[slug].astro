@@ -27,6 +27,7 @@ const metaDesc = article.meta_description || article.excerpt || '';
 // sensible fallbacks for articles written before the editor supported these.
 const coverRatio = (article.cover_ratio as string | null) || '16:9';
 const coverFocal = (article.cover_focal as string | null) || '50,50';
+const coverSize = (article.cover_size as string | null) || 'full';
 function coverAspectCss(r: string): string {
   if (r === '4:3') return '4 / 3';
   if (r === '1:1') return '1 / 1';
@@ -76,7 +77,7 @@ const tags = ((article as any).article_tags ?? []).map((at: any) => at.tag);
       </header>
 
       {article.cover_image && (
-        <div class="article__cover container">
+        <div class={`article__cover article__cover--${coverSize} container`}>
           <img src={article.cover_image} alt={article.title} style={coverStyle} />
         </div>
       )}
@@ -164,6 +165,10 @@ const tags = ((article as any).article_tags ?? []).map((at: any) => at.tag);
     object-fit: cover;
     border-radius: var(--r-lg);
   }
+  /* Admin-controlled display size: caps max-width so the hero doesn't
+     dominate the fold on large screens. Height is left to the chosen ratio. */
+  .article__cover--medium img { max-width: 720px; margin-left: auto; margin-right: auto; }
+  .article__cover--small img  { max-width: 480px; margin-left: auto; margin-right: auto; }
   /* Article prose — Twilight Water theme */
   .article__body {
     font-size: clamp(16px, 1.15vw, 18px);

@@ -28,6 +28,7 @@ export interface ArticleInitial {
   cover_image: string;
   cover_ratio: string;
   cover_focal: string;
+  cover_size: string;
   status: ArticleStatus;
   published_at: string | null;
   category_id: string | null;
@@ -76,6 +77,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
   const [cover, setCover] = React.useState(initial.cover_image);
   const [coverRatio, setCoverRatio] = React.useState(initial.cover_ratio || '16:9');
   const [coverFocal, setCoverFocal] = React.useState(initial.cover_focal || '50,50');
+  const [coverSize, setCoverSize] = React.useState(initial.cover_size || 'full');
   const [status, setStatus] = React.useState<ArticleStatus>(initial.status);
   const [publishedAt, setPublishedAt] = React.useState(initial.published_at ?? '');
   const [categoryId, setCategoryId] = React.useState(initial.category_id ?? NO_CATEGORY);
@@ -208,6 +210,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
           cover_image: cover || null,
           cover_ratio: coverRatio,
           cover_focal: coverFocal,
+          cover_size: coverSize,
           status: effectiveStatus,
           published_at: publishedAt || null,
           category_id: categoryId === NO_CATEGORY ? null : categoryId,
@@ -260,7 +263,7 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
     return () => clearTimeout(t);
     // editorState is a ref; contentText/contentHtml mirror it for dependency tracking.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, slug, excerpt, cover, coverRatio, coverFocal, status, categoryId, tagIds, metaTitle, metaDesc, focusKeyword, contentText, contentHtml, initial.id]);
+  }, [title, slug, excerpt, cover, coverRatio, coverFocal, coverSize, status, categoryId, tagIds, metaTitle, metaDesc, focusKeyword, contentText, contentHtml, initial.id]);
 
   return (
     <div className="space-y-4">
@@ -371,6 +374,29 @@ export default function ArticleForm({ initial, categories, tags }: Props) {
                         >{r === 'original' ? 'Asli' : r}</button>
                       ))}
                     </div>
+                  </div>
+                  {/* Display size preset (controls max-width/height on the public page) */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Ukuran tampilan</Label>
+                    <div className="flex gap-1.5">
+                      {([
+                        { value: 'full', label: 'Penuh' },
+                        { value: 'medium', label: 'Sedang' },
+                        { value: 'small', label: 'Kecil' },
+                      ] as const).map((s) => (
+                        <button
+                          key={s.value}
+                          type="button"
+                          onClick={() => setCoverSize(s.value)}
+                          className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${coverSize === s.value ? 'border-primary bg-primary/10 text-foreground' : 'border-border text-muted-foreground hover:text-foreground'}`}
+                        >{s.label}</button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {coverSize === 'full' && 'Gambar selebar konten — tinggi maks 520px.'}
+                      {coverSize === 'medium' && 'Gambar dibatasi ~720px — lebih ringkas.'}
+                      {coverSize === 'small' && 'Gambar kecil ~480px — fokus ke teks.'}
+                    </p>
                   </div>
                   {/* Focal point (drag on the image or sliders) */}
                   <div className="space-y-1.5">

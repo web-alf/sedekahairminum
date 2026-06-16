@@ -1,8 +1,8 @@
 -- ============================================================
--- BATCH: visi settings + focus_keyword + Rank Math SEO + cover_meta
+-- BATCH: visi settings + focus_keyword + Rank Math SEO + cover_meta + cover_size
 -- Paste seluruh isi file ini di Supabase Dashboard → SQL Editor → Run.
 -- Idempoten (aman dijalankan berulang): IF NOT EXISTS / ON CONFLICT DO NOTHING.
--- Sumber: migrasi 0015, 0016, 0017, 0018.
+-- Sumber: migrasi 0015, 0016, 0017, 0018, 0019.
 -- ============================================================
 
 -- ── 0015: key "about" (Visi editable di Pengaturan → Visi) ──────────────────
@@ -59,4 +59,16 @@ alter table public.articles
   add column if not exists cover_ratio text default '16:9';
 alter table public.articles
   add column if not exists cover_focal text default '50,50';
+
+-- ── 0019: kolom cover_size (Penuh / Sedang / Kecil) ──────────────────────
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'articles' and column_name = 'cover_size'
+  ) then
+    alter table public.articles
+      add column cover_size text default 'full' check (cover_size in ('full', 'medium', 'small'));
+  end if;
+end $$;
 
