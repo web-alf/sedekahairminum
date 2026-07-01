@@ -1,7 +1,15 @@
-# Project: <PROJECT_NAME>
+# Project: sedekahairminum
 
-> Templat ini bisa disalin ke project Astro 5 hybrid + React 19 + TipTap v3 + shadcn (base-nova) + Supabase (Postgres + Auth + Storage) yang di-deploy ke Cloudflare Workers.
-> Ganti `<PROJECT_NAME>` dengan nama project, dan sesuaikan `wrangler.jsonc`, `.dev.vars`, migrasi Supabase, dan endpoint internal.
+> Yayasan Sedekah Air Minum — website donasi untuk penyediaan air minum bersih
+> bagi masyarakat yang membutuhkan. CMS, struktur section, dan pola arsitektur
+> **sama persis** dengan `yayasanalhidayah` (Astro 5 hybrid + React 19 + TipTap v3
+> + shadcn (base-nova) + Supabase + Cloudflare Workers). Bedanya hanya konteks
+> homepage: program donasi air minum (pemasangan titik air, galon, sumur bor,
+> distribusi rutin), bukan program pendidikan/amal umum.
+>
+> Template ini bisa disalin ke project Astro 5 hybrid + React 19 + TipTap v3 +
+> shadcn (base-nova) + Supabase (Postgres + Auth + Storage) yang di-deploy ke
+> Cloudflare Workers.
 
 ---
 
@@ -16,12 +24,59 @@
 | Data         | Supabase (Postgres + Auth + Storage)                              |
 | Adapter      | `@astrojs/cloudflare` → **Cloudflare Worker** (bukan Pages)         |
 | Runtime      | Cloudflare Workers + `nodejs_compat_v2`                            |
+| Package mgr  | **Bun** (default di semua script — lihat bagian "Bun" di bawah)    |
 
 > **Penting**: proyek ini **bukan** Cloudflare Pages. Adapter `cloudflare()` dengan
 > `main: dist/_worker.js/index.js` + `assets: { directory, binding }` adalah model
 > **Worker Assets**. Deploy via `bunx wrangler deploy`. Deploy hook URL
 > berbentuk `https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/<ID>`
 > (bukan `/pages/...`).
+
+---
+
+## Bun (runtime & package manager)
+
+Default ke Bun, bukan Node.js/npm/pnpm/yarn.
+
+- `bun <file>` bukan `node`/`ts-node`
+- `bun test` bukan `jest`/`vitest`
+- `bun build <file.html|file.ts|file.css>` bukan `webpack`/`esbuild`
+- `bun install` bukan `npm/yarn/pnpm install`
+- `bun run <script>` bukan `npm/yarn/pnpm run`
+- `bunx <pkg> <cmd>` bukan `npx`
+- Bun auto-load `.env`, **jangan** pakai `dotenv`
+- Adapter `@astrojs/cloudflare` tetap nge-bundle ke `dist/_worker.js/index.js` →
+  dipakai Cloudflare Workers (V8 isolate), bukan Bun runtime. Bun hanya untuk
+  tooling lokal + build.
+
+> Untuk SSR request handling di Cloudflare, **tetap** pakai `Request`/`Response`
+> standar Web Fetch API (lihat `src/pages/api/**`). Jangan pakai `Bun.serve` —
+> tidak relevan di Worker runtime.
+
+---
+
+## Homepage — konteks section (sedekahairminum)
+
+Susunan section di `src/pages/index.astro` **sama** dengan yayasanalhidayah
+(11 blok, data-bound ke Supabase), hanya copywriting + asset yang disesuaikan
+ke misi air minum:
+
+| # | Section          | Konteks sedekahairminum                                                          |
+|---|------------------|----------------------------------------------------------------------------------|
+| 1 | `Nav`            | Sticky nav: Beranda / Program / Peta Penerima / Galeri / Testimoni / FAQ / Kontak. CTA "Donasi Air". |
+| 2 | `Hero`           | Slider dari `hero_slides` DB. Tagline: "Gerakan Wakaf Air Bersih untuk Indonesia". Subhead: ringkasan dampak (lembaga terlayani, galon tersalur, titik air aktif). 2 CTA: "Donasi Sekarang" + "Lihat Program". |
+| 3 | `StatStrip`      | 4 metrik dari `stats` (key 'home'): lembaga penerima, galon tersalur, titik air aktif, tahun beroperasi. Counter animasi saat scroll. |
+| 4 | `Features`       | 3–4 nilai utama: 100% donasi tersalur, tepat sasaran, sesuai syariat, transparan. Dilengkapi `programSlides` (campaign aktif). |
+| 5 | `Map`            | Peta Indonesia interaktif (MapLibre) berisi titik `penerima` (lokasi + jumlah galon). Klik marker → popup detail. Legend count dinamis dari data. |
+| 6 | `Gallery`        | Slider foto kegiatan: distribusi galon, pemasangan titik air, sumur bor, kunjungan lapangan. |
+| 7 | `Testimonials`   | Quote dari penerima manfaat (pengurus masjid, pesantren, lembaga) + donatur tetap. |
+| 8 | `FAQ`            | Pertanyaan umum: cara donasi, penyaluran, pelaporan, legalitas, QRIS.            |
+| 9 | `CTABanner`      | Section penutup: "Mulai dari Rp10.000 = 1 galon untuk 1 keluarga." QRIS + transfer + donasi rutin. |
+| 10 | `Footer`        | Kontak sekretariat, WhatsApp, email, media sosial, legalitas, alamat.           |
+| 11 | `<main>` wrapper | Aksesibilitas: `id="main-content"` jadi target skip-link.                       |
+
+> Semua data homepage **Supabase-backed** — edit dari `src/lib/supabase/queries/marketing.ts`.
+> Sumber kebenaran section: `src/pages/index.astro` + `src/components/*.astro`.
 
 ---
 
@@ -113,6 +168,8 @@ Lihat **`docs/SETUP.md`** (atau sesuai project) untuk langkah detail. Urutan sin
 | Idempotent SQL batches     | `supabase/apply_batch_*.sql` (dashboard-ready, drop-if-exists)       |
 | `Base-UI` Select value→label | `items` prop wajib di `Select.Root` (value saja → tampil UUID)      |
 | TipTap v3 text-style meta-package | `TextStyle` + subpath `color/font-family/font-size`              |
+| Marketing content (CMS)    | `src/lib/supabase/queries/marketing.ts` → hero/stats/features/program/gallery/testimonials/faqs/penerima |
+| Peta penerima interaktif   | `Map.astro` + `IndonesiaMap.tsx` (MapLibre GL)                      |
 
 ---
 
@@ -129,12 +186,16 @@ src/lib/supabase/server.ts          # SSR Supabase client (cookies)
 src/lib/supabase/browser.ts         # browser Supabase client (admin islands)
 src/lib/supabase/types.ts           # generated Database types — regenerate, jangan edit manual
 src/lib/supabase/env.ts             # resolveEnv: workers runtime vs import.meta.env
+src/lib/supabase/queries/           # data fetching per domain (marketing, articles, dll)
 src/lib/security.ts                 # passwordStrengthError, sanitasi input
 src/lib/sanitize.ts                 # sanitizeArticleHtml — DOMPurify/sanitize-html policy
 src/lib/activity.ts                 # recordActivity (audit log, wajib di setiap mutasi)
 src/layouts/Layout.astro            # global head: SEO meta, OG, Twitter, GA4, verifikasi
 src/styles/tailwind.css             # shadcn tokens (--background, --primary, dll) + light/dark
-supabase/migrations/                # numbered SQL files, urut kronologis
+src/pages/index.astro               # homepage (11 section sesuai tabel konteks di atas)
+src/components/*.astro              # Nav, Hero, StatStrip, Features, Map, Gallery, Testimonials, FAQ, CTABanner, Footer
+src/components/admin/               # AdminShell, DashboardHome, articles/, editor/, media/, seo/, settings/, submissions/
+supabase/migrations/                # 19 numbered SQL files, urut kronologis
 supabase/apply_batch_*.sql          # single-file dashboard paste (idempoten)
 ```
 
