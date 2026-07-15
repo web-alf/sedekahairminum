@@ -23,14 +23,23 @@ export function createExports(manifest: unknown) {
   const fetch = base.default.fetch;
 
   const scheduled = async (_controller: ScheduledController, env: Env, ctx: ExecutionContext) => {
+    // GET, not POST: Astro's security.checkOrigin blocks cross-site POSTs (the
+    // internal `https://internal` origin never matches), which silently 403'd
+    // the daily keep-alive. The GET heartbeat variant runs the same RPC.
     const req = new Request('https://internal/api/heartbeat', {
-      method: 'POST',
+      method: 'GET',
       headers: { 'x-cron-secret': env.CRON_SECRET ?? '' },
     });
     ctx.waitUntil(
-      fetch(req, env, ctx).catch((err: unknown) => {
-        console.error('[cron] heartbeat failed', err);
-      }),
+      fetch(req, env, ctx)
+        .then((res) => {
+          // A non-2xx here is the silent failure that let the DB drift toward
+          // pausing — log it loudly so it surfaces in `wrangler tail`.
+          if (!res.ok) console.error(`[cron] heartbeat HTTP ${res.status}`);
+        })
+        .catch((err: unknown) => {
+          console.error('[cron] heartbeat failed', err);
+        }),
     );
   };
 
