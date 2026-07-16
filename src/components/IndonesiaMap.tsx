@@ -2,7 +2,7 @@ import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls } from "@/com
 import { useEffect, useState } from "react";
 
 interface Props {
-  points: Array<{ lng: number; lat: number; name: string; alamat: string; galon: number }>;
+  points: Array<{ lng: number; lat: number; name: string; alamat: string; galon: number; status?: string }>;
 }
 
 function useTheme() {
@@ -32,7 +32,9 @@ export default function IndonesiaMapComponent({ points }: Props) {
         maxZoom={16}
       >
         <MapControls position="bottom-right" showZoom />
-        {points.map((p, i) => (
+        {points.map((p, i) => {
+          const done = p.status === "selesai";
+          return (
           <MapMarker key={i} longitude={p.lng} latitude={p.lat}>
             <MarkerContent>
               <div style={{
@@ -41,7 +43,8 @@ export default function IndonesiaMapComponent({ points }: Props) {
                 borderRadius: "50%",
                 background: "#5ee4f0",
                 border: "2px solid rgba(255,255,255,0.85)",
-                boxShadow: "0 0 10px rgba(94, 228, 240, 0.5)",
+                boxShadow: done ? "0 0 6px rgba(94, 228, 240, 0.2)" : "0 0 10px rgba(94, 228, 240, 0.5)",
+                opacity: done ? 0.4 : 1,
                 cursor: "pointer",
               }} />
             </MarkerContent>
@@ -53,7 +56,8 @@ export default function IndonesiaMapComponent({ points }: Props) {
               </div>
             </MarkerTooltip>
           </MapMarker>
-        ))}
+          );
+        })}
       </Map>
     </div>
   );

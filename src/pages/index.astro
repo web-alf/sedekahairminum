@@ -27,7 +27,7 @@ const [heroSlides, homeStats, features, programSlides, gallery, testimonials, fa
 
 const mapPoints = penerima
   .filter(p => p.lat != null && p.lng != null)
-  .map(p => ({ lng: p.lng!, lat: p.lat!, name: p.name, alamat: p.alamat ?? '', galon: p.galon }));
+  .map(p => ({ lng: p.lng!, lat: p.lat!, name: p.name, alamat: p.alamat ?? '', galon: p.galon, status: p.status }));
 
 // Legend counts derived from data (was hardcoded "19 lembaga · 298 galon").
 const penerimaCount = penerima.length;
